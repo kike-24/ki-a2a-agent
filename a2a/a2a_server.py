@@ -26,7 +26,7 @@ import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langchain_core.runnables.config import RunnableConfig
 from langchain_core.tools import tool
 from langchain_groq import ChatGroq
@@ -41,12 +41,12 @@ from typing import TypedDict
 # ─────────────────────────────────────────────
 
 @tool
-def web_search(query: str) -> str:
+def search_information(query: str) -> str:
     """
-    DuckDuckGo APIを使用してWeb検索を実行します。
+    インターネットから情報を検索して返します。
 
     Args:
-        query: 検索クエリ
+        query: 検索したい内容
 
     Returns:
         検索結果の文字列
@@ -76,13 +76,21 @@ class AgentState(TypedDict):
     messages: Annotated[List[BaseMessage], operator.add]
 
 
+SYSTEM_PROMPT = (
+    "あなたは情報検索アシスタントです。"
+    "ユーザーの質問に答えるために、必ず search_information ツールのみを使用してください。"
+    "他のツールは存在しません。search_information 以外のツールを呼び出さないでください。"
+)
+
+
 def agent_node(state: AgentState) -> AgentState:
     llm = ChatGroq(
         model=os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile"),
         api_key=os.environ["GROQ_API_KEY"],
         temperature=0,
     )
-    response = llm.bind_tools([web_search]).invoke(state["messages"])
+    messages = [SystemMessage(content=SYSTEM_PROMPT)] + list(state["messages"])
+    response = llm.bind_tools([search_information]).invoke(messages)
     return {"messages": [response]}
 
 
@@ -96,7 +104,7 @@ def should_continue(state: AgentState):
 def build_graph() -> StateGraph:
     workflow = StateGraph(AgentState)
     workflow.add_node("agent", agent_node)
-    workflow.add_node("tools", ToolNode([web_search]))
+    workflow.add_node("tools", ToolNode([search_information]))
     workflow.add_edge(START, "agent")
     workflow.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
     workflow.add_edge("tools", "agent")
