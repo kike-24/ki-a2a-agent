@@ -1,0 +1,47 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# A2A 連携バージョン — watsonx Orchestrate への外部エージェント登録用 YAML
+#
+# 使い方:
+#   1. a2a_server.py を起動してエージェントサーバーをホストする
+#   2. api_url を実際のサーバー URL に書き換える
+#   3. 以下のコマンドで wxO に登録する:
+#      orchestrate agents import -f agent_a2a.yaml
+#
+# ※ 元のネイティブ取り込み用は agent.yaml で引き続き管理できます。
+# ─────────────────────────────────────────────────────────────────────────────
+
+spec_version: v1
+kind: external                          # 外部エージェントとして登録
+name: ki-web-search-agent-a2a
+title: KI Web検索エージェント (A2A)
+description: |
+  DuckDuckGo を使ったWeb検索ができる LangGraph エージェント（A2A連携版）。
+  Groq（llama-3.3-70b-versatile）を LLM として使用します。
+  A2A プロトコル v0.3.0 経由で watsonx Orchestrate に接続します。
+tags:
+  - a2a
+  - web-search
+  - langgraph
+
+# A2A プロトコル v0.3.0 を指定
+provider: external_chat/A2A/0.3.0
+
+# a2a_server.py を起動しているサーバーの URL に変更してください
+# 例（IBM Code Engine）: https://ki-a2a-server.<hash>.<region>.codeengine.appdomain.cloud
+# デプロイ後の URL は以下で確認: ibmcloud ce application get --name ki-a2a-server --output url
+api_url: "http://localhost:8000"        # ← Code Engine デプロイ後の URL に変更する
+
+# 認証方式: サーバーで認証を設けない場合は NONE、トークン認証なら BEARER_TOKEN
+auth_scheme: NONE
+# auth_scheme: BEARER_TOKEN
+# auth_config:
+#   token: "your-secret-token"         # BEARER_TOKEN 使用時はコメントを外して設定
+
+chat_params:
+  sendHistory: true                    # 会話履歴をエージェントに送信する
+  stream: false                        # SSE ストリーミングは無効（同期 REST 呼び出し）
+  pushNotifications: false             # 長時間タスクの非同期プッシュ通知（不要なら false）
+
+config:
+  hidden: false                        # wxO UI にエージェントを表示する
+  enable_cot: false                    # Chain-of-Thought の表示（外部エージェントには通常 false）

@@ -1,0 +1,15 @@
+# A2A サーバー用依存ライブラリ
+# 使い方: pip install -r requirements_a2a.txt
+
+# ─── Web フレームワーク ───────────────────────────────────
+fastapi>=0.111.0
+uvicorn[standard]>=0.30.0
+
+# ─── LangGraph / LangChain ───────────────────────────────
+langgraph>=0.2.0
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-groq>=0.2.0
+
+# ─── Web 検索 API ─────────────────────────────────────────
+duckduckgo-search>=6.0.0
