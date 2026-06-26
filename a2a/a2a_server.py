@@ -78,7 +78,7 @@ class AgentState(TypedDict):
 
 def agent_node(state: AgentState) -> AgentState:
     llm = ChatGroq(
-        model="llama-3.3-70b-versatile",
+        model=os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile"),
         api_key=os.environ["GROQ_API_KEY"],
         temperature=0,
     )
