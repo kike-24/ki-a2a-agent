@@ -27,9 +27,11 @@ tags:
 provider: external_chat/A2A/0.3.0
 
 # a2a_server.py を起動しているサーバーの URL に変更してください
-# 例（IBM Code Engine）: https://ki-a2a-server.<hash>.<region>.codeengine.appdomain.cloud
-# デプロイ後の URL は以下で確認: ibmcloud ce application get --name ki-a2a-server --output url
-api_url: "http://localhost:8000"        # ← Code Engine デプロイ後の URL に変更する
+# 例（Railway）: https://ki-a2a-agent-production.up.railway.app
+# 例（Render）:  https://ki-a2a-server.onrender.com
+# 例（Fly.io）:  https://ki-a2a-server.fly.dev
+# デプロイ手順: README_free_hosting.md を参照
+api_url: "http://localhost:8000"        # ← デプロイ後の URL に変更する
 
 # 認証方式: サーバーで認証を設けない場合は NONE、トークン認証なら BEARER_TOKEN
 auth_scheme: NONE
