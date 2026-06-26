@@ -31,7 +31,7 @@ provider: external_chat/A2A/0.3.0
 # 例（Render）:  https://ki-a2a-server.onrender.com
 # 例（Fly.io）:  https://ki-a2a-server.fly.dev
 # デプロイ手順: README_free_hosting.md を参照
-api_url: "http://localhost:8000"        # ← デプロイ後の URL に変更する
+api_url: "https://ki-a2a-agent-production.up.railway.app"
 
 # 認証方式: サーバーで認証を設けない場合は NONE、トークン認証なら BEARER_TOKEN
 auth_scheme: NONE
@@ -40,7 +40,7 @@ auth_scheme: NONE
 #   token: "your-secret-token"         # BEARER_TOKEN 使用時はコメントを外して設定
 
 chat_params:
-  sendHistory: true                    # 会話履歴をエージェントに送信する
+  sendHistory: false                   # Orchestrator側のツール情報混入を防ぐため無効化
   stream: false                        # SSE ストリーミングは無効（同期 REST 呼び出し）
   pushNotifications: false             # 長時間タスクの非同期プッシュ通知（不要なら false）
 
