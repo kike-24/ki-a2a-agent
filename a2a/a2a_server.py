@@ -172,7 +172,7 @@ AGENT_CARD = {
         "DuckDuckGo を使ったWeb検索ができる LangGraph エージェント。"
         "Groq（llama-3.3-70b-versatile）を LLM として使用します。"
     ),
-    "url": os.environ.get("AGENT_BASE_URL", "http://localhost:8000"),
+    "url": os.environ.get("AGENT_BASE_URL", "https://ki-a2a-agent-production.up.railway.app"),
     "version": "1.0.0",
     "capabilities": {
         "streaming": False,
