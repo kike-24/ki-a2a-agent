@@ -41,13 +41,12 @@ from typing import TypedDict
 # ─────────────────────────────────────────────
 
 @tool
-def web_search(query: str, max_results: int = 5) -> str:
+def web_search(query: str) -> str:
     """
     DuckDuckGo APIを使用してWeb検索を実行します。
 
     Args:
         query: 検索クエリ
-        max_results: 返す最大結果数（デフォルト: 5）
 
     Returns:
         検索結果の文字列
@@ -55,7 +54,7 @@ def web_search(query: str, max_results: int = 5) -> str:
     try:
         with DDGS() as ddgs:
             results = []
-            for i, r in enumerate(ddgs.text(query, max_results=max_results), 1):
+            for i, r in enumerate(ddgs.text(query, max_results=5), 1):
                 results.append(
                     f"{i}. {r.get('title', 'タイトルなし')}\n"
                     f"   URL: {r.get('href', '')}\n"
@@ -81,7 +80,7 @@ def agent_node(state: AgentState) -> AgentState:
     llm = ChatGroq(
         model="llama-3.3-70b-versatile",
         api_key=os.environ["GROQ_API_KEY"],
-        temperature=0.7,
+        temperature=0,
     )
     response = llm.bind_tools([web_search]).invoke(state["messages"])
     return {"messages": [response]}
